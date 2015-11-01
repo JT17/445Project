@@ -1,0 +1,13 @@
+http://techblog.netflix.com/2012/06/netflix-recommendations-beyond-5-stars.html
+
+https://en.wikipedia.org/wiki/Learning_to_rank
+
+Predicting a users rating of a restaurant:
+
+	-- Train on their reviews of other restaurants
+
+	-- Is there enough data for each user in the dataset?
+
+		-- May need to cluster "similar" users together
+
+		-- What's the best way to do this? Euclidean distance? Distance of most indicative features?
