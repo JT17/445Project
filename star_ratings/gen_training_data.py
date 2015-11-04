@@ -4,7 +4,7 @@ def gen_training_data():
 	training_labels = [] 
 	testing = []
 	testing_labels = []
-	with open('yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
+	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
 		i = 0;
 		for review in yelp_reviews:
 			review_contents = json.loads(review);
