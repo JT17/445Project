@@ -1,5 +1,7 @@
 http://techblog.netflix.com/2012/06/netflix-recommendations-beyond-5-stars.html
 
+http://cs229.stanford.edu/proj2013/SawantPai-YelpFoodRecommendationSystem.pdf
+
 https://en.wikipedia.org/wiki/Learning_to_rank
 
 Predicting a users rating of a restaurant:
