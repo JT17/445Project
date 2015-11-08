@@ -40,4 +40,4 @@ def classify_user_reviews():
 	
 
 if __name__ == "__main__":
-	classify_reviews();
+#classify_reviews();

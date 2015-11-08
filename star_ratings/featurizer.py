@@ -29,3 +29,17 @@ def tfidf(input):
 	return {'train_tfidf': train_tfidf, 'test_tfidf':test_tfidf}
 
 
+def kmeans(input, num_clusters):
+	from sklearn.cluster import KMeans
+	import numpy as np
+	from scipy.sparse import csr_matrix
+	input_as_np = np.array(input.values());
+	dense_vals = np.empty([input_as_np.shape[0], input_as_np[0].shape[1]]);
+	index = 0;
+	for val in input_as_np:
+		dense_vals[index] = val.toarray();
+		index = index + 1;
+	
+	clf = KMeans(n_clusters = num_clusters);
+	clustered_input = clf.fit_predict(dense_vals);
+	return {'ids':input.keys(), 'clusters':clustered_input}
