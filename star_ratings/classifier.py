@@ -39,7 +39,7 @@ def classify_user_reviews():
 	user_classifiers = {};
 
 #not done
-def predict_star(user, business):
+def predict_star_business_cluster(user, business):
 	import featurizer
 	import numpy as np
 	from sklearn.naive_bayes import MultinomailNB
@@ -62,7 +62,7 @@ def predict_star(user, business):
 			count = count + 1;
 
 	if count == 0:
-
+		#we should talk about what should be happening here
 
 	return average / count;
 
