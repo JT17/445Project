@@ -61,7 +61,7 @@ def predict_star(user, business):
 			average = average + review['stars'];
 			count = count + 1;
 
-	
+	if count == 0:
 
 
 	return average / count;
