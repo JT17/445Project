@@ -1,5 +1,6 @@
 def gen_data():
 	import json
+	import cPickle as pickle
 	training = []
 	training_labels = [] 
 	testing = []
@@ -15,9 +16,11 @@ def gen_data():
 				training.append(review_contents['text']);
 				training_labels.append(review_contents['stars'] );
 			i = i+1;
-	
-	
-	return {'training':training, 'training_labels':training_labels, 'testing':testing, 'testing_labels':testing_labels}
+	return_struct = {'training':training, 'training_labels':training_labels, 'testing':testing, 'testing_labels':testing_labels}
+	with open('label_data.p', 'wb') as fp:
+		pickle.dump(return_struct,fp);	
+	return return_struct;
+
 
 def parse_business_data():
 	import json
