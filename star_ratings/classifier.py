@@ -86,11 +86,11 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 
 	return w1 * star_prediction + w2 * average_rating + b;
 
-def RMSE():
+def error():
 	import featurizer
 	import cPickle as pickle	
 
-	total = 0;
+	totalRMSE = 0;
 
 	user_weights = pickle.load(open('user_weights.p', 'rb'));
 	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
@@ -103,9 +103,14 @@ def RMSE():
 			review_contents = json.loads(review);
 			userId = review_contents['user_id'];
 			businessId = review_contents['business_id'];
-			total += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1])**2;
+			totalRMSE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1])**2;
+			totalMAE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1]);
 
-	return ((1 / 9000) * total)**.5;
+	return {'RMSE':((1 / 9000) * totalRMSE)**.5, 'MAE':((1 / 9000) * totalMAE)**.5};
+
+
+
+
 
 
 
