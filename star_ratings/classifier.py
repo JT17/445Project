@@ -58,7 +58,7 @@ def user_utility_nUsrClstr(userId, businessId, w1, w2, b):
 	return w1 * star_prediction + w2 * average_rating + b;
 
 def user_utility_UsrClstr(userId, businessId, w1, w2, b):
-
+	import featurizer
 	import cPickle as pickle
 	with open('business_data.p', 'rb') as handle:
 		data = pickle.load(handle);
@@ -88,6 +88,8 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 
 def RMSE():
 
+	
+	user_weights = pickle.load(open('user_weights.p', 'rb'));
 
 
 if __name__ == "__main__":
