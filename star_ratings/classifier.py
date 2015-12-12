@@ -77,7 +77,7 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 
 	for user in user_weights.keys():
 		if user_clusters[userId] == user_clusters[user]:
-			total += user_weights[user];
+			total += user_weights[user][cluster - 1];
 			count += 1;
 
 
@@ -87,9 +87,27 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 	return w1 * star_prediction + w2 * average_rating + b;
 
 def RMSE():
+	import featurizer
+	import cPickle as pickle	
 
-	
+	total = 0;
+
 	user_weights = pickle.load(open('user_weights.p', 'rb'));
+	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
+
+	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
+		i = 0;
+		for review in yelp_reviews:
+			if (i > 9000):
+				break;
+			review_contents = json.loads(review);
+			userId = review_contents['user_id'];
+			businessId = review_contents['business_id'];
+			total += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1])**2;
+
+	return ((1 / 9000) * total)**.5;
+
+
 
 
 if __name__ == "__main__":
