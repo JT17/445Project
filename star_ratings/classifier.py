@@ -51,9 +51,38 @@ def user_utility_nUsrClstr(userId, businessId, w1, w2, b):
 
 	user_weights = pickle.load(open("user_weights.p", "rb"));
 
-	average_rating = data[businessId]['stars'];
+	average_rating = data[businessId]['stars']; 
 	star_prediction = user_weights[userId][cluster - 1]; # should this be -1 or +0?
 	
+
+	return w1 * star_prediction + w2 * average_rating + b;
+
+def user_utility_UsrClstr(userId, businessId, w1, w2, b):
+
+	import cPickle as pickle
+	with open('business_data.p', 'rb') as handle:
+		data = pickle.load(handle);
+
+	business_clusters = pickle.load(open('clustered_business.p', "rb"));
+	cluster = business_clusters[businessId];
+	pickle.dump(business_clusters, open("clustered_business.p", "wb"));
+
+	average_rating = data[businessId]['stars'];
+
+	user_weights = pickle.load(open('user_weights.p', 'rb'));
+	user_clusters = featurizer.kmeans(user_weights, 32);
+
+	count = 0;
+	total = 0:
+
+	for user in user_weights.keys():
+		if user_clusters[userId] == user_clusters[user]:
+			total += user_weights[user];
+			count += 1;
+
+
+	star_prediction = total / count;
+
 
 	return w1 * star_prediction + w2 * average_rating + b;
 
