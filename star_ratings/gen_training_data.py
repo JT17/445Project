@@ -114,7 +114,7 @@ def cluster_users(num_clusters, useful_threshold):
 		for weight, num in zip(business_categories, num_revs):
 			if(num != 0):
 				vals.append(weight/float(num));
-				training_weights[user] = weight/float(num);
+				# training_weights[user] = weight/float(num);
 			else:
 				vals.append(0);
 			j += 1;

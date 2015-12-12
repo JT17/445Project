@@ -66,7 +66,23 @@ def predict_star_business_cluster(user, business):
 
 	return average / count;
 
-	
+def user_utility_nUsrClstr(userId, businessId, w1, w2, b):
+	#utility function without using user clustering
+
+	import cPickle as pickle
+	user_weights = pickle.load(open("user_weights.p", "rb"));	
+	business_clusters = pickle.load(open('clustered_business.p', "rb"));
+	with open('business_data.p', 'rb') as handle:
+		data = pickle.load(handle);
+
+	star_prediction = user_weights[userId][business_clusters[businessId] - 1];
+	average_rating = data[businessId]['stars'];
+
+	return w1 * star_prediction + w2 * average_rating + b;
+
+def RMSE():
+
+	 	
 
 if __name__ == "__main__":
 	classify_reviews();
