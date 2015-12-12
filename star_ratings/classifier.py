@@ -38,51 +38,28 @@ def classify_user_reviews():
 	data = gen_training_data.gen_user_data();
 	user_classifiers = {};
 
-#not done
-def predict_star_business_cluster(user, business):
-	import featurizer
-	import numpy as np
-	from sklearn.naive_bayes import MultinomailNB
-	from sklearn.linear_model import SGDClassifier
-
-	import cPickle as pickle
-	with open('business_data.p', 'rb') as handle:
-		data = pickle.load(handle);
-
-	results = featurizer.kmeans(data,32);
-
-	#need some method to get users
-	average = 0;
-	count = 0;
-	for review in tempGetUsers[user].reviews:
-		#average together all of the stars of reviews
-		#in the same cluster as business
-		if results['clusters'][review] == results['clusters'][]: #this is almost certainly incorrect syntax
-			average = average + review['stars'];
-			count = count + 1;
-
-	if count == 0:
-		#we should talk about what should be happening here
-
-	return average / count;
 
 def user_utility_nUsrClstr(userId, businessId, w1, w2, b):
 	#utility function without using user clustering
-
 	import cPickle as pickle
-	user_weights = pickle.load(open("user_weights.p", "rb"));	
-	business_clusters = pickle.load(open('clustered_business.p', "rb"));
 	with open('business_data.p', 'rb') as handle:
 		data = pickle.load(handle);
 
-	star_prediction = user_weights[userId][business_clusters[businessId] - 1];
+	business_clusters = pickle.load(open('clustered_business.p', "rb"));	
+	cluster = business_clusters[businessId];
+	pickle.dump(business_clusters, open("clustered_business.p", "wb"));
+
+	user_weights = pickle.load(open("user_weights.p", "rb"));
+
 	average_rating = data[businessId]['stars'];
+	star_prediction = user_weights[userId][cluster - 1]; # should this be -1 or +0?
+	
 
 	return w1 * star_prediction + w2 * average_rating + b;
 
 def RMSE():
 
-	 	
+
 
 if __name__ == "__main__":
 	classify_reviews();
