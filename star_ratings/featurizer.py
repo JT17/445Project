@@ -42,4 +42,8 @@ def kmeans(input, num_clusters):
 	
 	clf = KMeans(n_clusters = num_clusters);
 	clustered_input = clf.fit_predict(dense_vals);
-	return {'ids':input.keys(), 'clusters':clustered_input}
+	output = {};
+	for business_id, cluster in zip(input.keys(), clustered_input):
+		output[business_id] = cluster;
+
+	return output
