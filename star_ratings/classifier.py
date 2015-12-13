@@ -75,7 +75,7 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b, userClstr):
 	total = 0:
 
 	for user in user_weights.keys():
-		if user_clusters[userId] == user_clusters[user]:
+		if user_clusters[userId] == user_clusters[user] and user_weights[user][j] != 0:
 			total += user_weights[user][cluster];
 			count += 1;
 
@@ -111,7 +111,7 @@ def error():
 			total = 0:
 
 			for user in user_weights.keys():
-				if i == user_clusters[user]:
+				if i == user_clusters[user] and user_weights[user][j] != 0:
 					total += user_weights[user][j];
 					count += 1;
 
