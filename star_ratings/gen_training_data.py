@@ -68,7 +68,7 @@ def cluster_users(num_clusters, useful_threshold):
 		i = 0;
 		for review in yelp_reviews:
 			review_contents = json.loads(review);
-			if(i > 9000):
+			if(i > 150000):
 				if(review_contents['user_id'] in testing_clusters):
 					testing_clusters[review_contents['user_id']][business_clusters[review_contents['business_id']]] += review_contents['stars'];
 					testing_num[review_contents['user_id']][business_clusters[review_contents['business_id']]] += 1 

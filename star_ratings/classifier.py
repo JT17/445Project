@@ -92,21 +92,21 @@ def error():
 
 	totalRMSE = 0;
 
-	user_weights = pickle.load(open('user_weights.p', 'rb'));
+	user_weights = pickle.load(open('clustered_user.p', 'rb'));
 	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
 
 	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
 		i = 0;
 		for review in yelp_reviews:
-			if (i > 9000):
+			if (i > 1500000):
 				break;
 			review_contents = json.loads(review);
 			userId = review_contents['user_id'];
 			businessId = review_contents['business_id'];
-			totalRMSE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1])**2;
-			totalMAE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId] - 1]);
+			totalRMSE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId]])**2;
+			totalMAE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId]]);
 
-	return {'RMSE':((1 / 9000) * totalRMSE)**.5, 'MAE':((1 / 9000) * totalMAE)**.5};
+	return {'RMSE':((1 / 1500000) * totalRMSE)**.5, 'MAE':((1 / 1500000) * totalMAE)**.5};
 
 
 
