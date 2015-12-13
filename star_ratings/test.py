@@ -10,7 +10,9 @@ pickle.dump(business_clusters, open('clustered_business.p', 'wb'))
 user_data = gen_training_data.cluster_users(32,5);
 user_clusters = featurizer.kmeans(user_data, 32);
 pickle.dump(user_clusters, open('clustered_user.p', 'wb'))
-classifier.error();
+error = classifier.error();
+print error
+pickle.dump(error, open('error.p', 'wb'))
 #print results
 #user_weights = pickle.load(open('user_weights.p', 'rb'));
 #user_clusters = featurizer.kmeans(user_weights, 32);

@@ -72,7 +72,7 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b, userClstr):
 	user_clusters = userClstr[userId];
 
 	count = 0;
-	total = 0:
+	total = 0;
 
 	for user in user_weights.keys():
 		if user_clusters[userId] == user_clusters[user] and user_weights[user][j] != 0:
@@ -89,6 +89,8 @@ def error():
 	import featurizer
 	import numpy as np
 	import cPickle as pickle	
+	from scipy import sparse
+	import json
 	with open('business_data.p', 'rb') as handle:
 		data = pickle.load(handle);
 
@@ -108,14 +110,18 @@ def error():
 		for j in range(0,32):
 
 			count = 0;
-			total = 0:
+			total = 0;
 
 			for user in user_weights.keys():
-				if i == user_clusters[user] and user_weights[user][j] != 0:
-					total += user_weights[user][j];
-					count += 1;
-
-			star_matrix[i][j] = total  / count;
+				if(i == user_clusters[user]):
+					vals = user_weights[user].todense()
+					if(vals[0,j] != 0):
+						total += vals[0,j] 
+						count += 1;
+			if(count > 0):
+				star_matrix[i,j] = total  / count;
+			else:
+				star_matrix[i,j] = 0;
 
 
 
