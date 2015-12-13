@@ -57,8 +57,7 @@ def user_utility_nUsrClstr(userId, businessId, w1, w2, b):
 
 	return w1 * star_prediction + w2 * average_rating + b;
 
-def user_utility_UsrClstr(userId, businessId, w1, w2, b):
-	import featurizer
+def user_utility_UsrClstr(userId, businessId, w1, w2, b, userClstr):
 	import cPickle as pickle
 	with open('business_data.p', 'rb') as handle:
 		data = pickle.load(handle);
@@ -70,14 +69,14 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 	average_rating = data[businessId]['stars'];
 
 	user_weights = pickle.load(open('user_weights.p', 'rb'));
-	user_clusters = featurizer.kmeans(user_weights, 32);
+	user_clusters = userClstr[userId];
 
 	count = 0;
 	total = 0:
 
 	for user in user_weights.keys():
 		if user_clusters[userId] == user_clusters[user]:
-			total += user_weights[user][cluster - 1];
+			total += user_weights[user][cluster];
 			count += 1;
 
 
@@ -88,13 +87,37 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b):
 
 def error():
 	import featurizer
+	import numpy as np
 	import cPickle as pickle	
+	with open('business_data.p', 'rb') as handle:
+		data = pickle.load(handle);
+
+	star_matrix = np.empty([32,32]);
 
 	totalRMSE = 0;
 	totalMAE = 0;
 
-	user_weights = pickle.load(open('clustered_user.p', 'rb'));
+	user_weights = pickle.load(open('user_weights.p', 'rb'));
+
+	user_clusters = pickle.load(open('clustered_user.p', 'rb'));
 	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
+
+
+
+	for i in range(0,32):
+		for j in range(0,32):
+
+			count = 0;
+			total = 0:
+
+			for user in user_weights.keys():
+				if i == user_clusters[user]:
+					total += user_weights[user][j];
+					count += 1;
+
+			star_matrix[i][j] = total  / count;
+
+
 
 	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
 		i = 0;
@@ -104,8 +127,8 @@ def error():
 			review_contents = json.loads(review);
 			userId = review_contents['user_id'];
 			businessId = review_contents['business_id'];
-			totalRMSE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId]])**2;
-			totalMAE += (review_contents['stars'] - user_weights[userId][business_clusters[businessId]]);
+			totalRMSE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]])**2;
+			totalMAE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
 
 	return {'RMSE':((1 / 1500000) * totalRMSE)**.5, 'MAE':((1 / 1500000) * totalMAE)**.5};
 
