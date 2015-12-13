@@ -105,7 +105,7 @@ def error():
 	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
 
 
-
+	#iterate across stuff
 	for i in range(0,32):
 		for j in range(0,32):
 
