@@ -91,6 +91,7 @@ def error():
 	import cPickle as pickle	
 
 	totalRMSE = 0;
+	totalMAE = 0;
 
 	user_weights = pickle.load(open('clustered_user.p', 'rb'));
 	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
