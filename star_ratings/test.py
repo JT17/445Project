@@ -4,13 +4,16 @@ import classifier
 import featurizer
 import gen_training_data
 from scipy import sparse
+
+numBusinessClusters = 10;
+numUserClusters = 10;
 business_data = pickle.load(open("business_data.p", "rb"))
-business_clusters = featurizer.kmeans(business_data,32);
+business_clusters = featurizer.kmeans(business_data,numBusinessClusters);
 pickle.dump(business_clusters, open('clustered_business.p', 'wb'))
-user_data = gen_training_data.cluster_users(32,5);
-user_clusters = featurizer.kmeans(user_data, 32);
+user_data = gen_training_data.cluster_users(numUserClusters,5);
+user_clusters = featurizer.kmeans(user_data, numUserClusters);
 pickle.dump(user_clusters, open('clustered_user.p', 'wb'))
-error = classifier.error();
+error = classifier.error(numUserClusters,numBusinessClusters);
 print error
 pickle.dump(error, open('error.p', 'wb'))
 #print results
