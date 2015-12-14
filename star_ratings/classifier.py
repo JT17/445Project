@@ -142,7 +142,9 @@ def error(numUserClusters,numBusinessClusters):
 			i = i + 1;
 	
 	print badusers	
-	return {'RMSE':((1 / 800000) * totalRMSE)**.5, 'MAE':((1 / 800000) * totalMAE)**.5};
+        print totalRMSE
+        print totalMAE
+	return {'RMSE':((1.0/ 800000) * totalRMSE)**.5, 'MAE':((1.0 / 800000) * totalMAE)**.5};
 
 
 
