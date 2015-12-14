@@ -139,6 +139,7 @@ def error(numUserClusters,numBusinessClusters):
 				totalMAE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
 			else:
 				badusers += 1;
+			i = i + 1;
 	
 	print badusers	
 	return {'RMSE':((1 / 800000) * totalRMSE)**.5, 'MAE':((1 / 800000) * totalMAE)**.5};
