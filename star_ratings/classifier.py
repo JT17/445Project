@@ -127,15 +127,20 @@ def error(numUserClusters,numBusinessClusters):
 
 	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
 		i = 0;
+		badusers = 0;
 		for review in yelp_reviews:
 			if (i > 800000):
 				break;
 			review_contents = json.loads(review);
 			userId = review_contents['user_id'];
 			businessId = review_contents['business_id'];
-			totalRMSE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]])**2;
-			totalMAE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
-
+			if(userId in user_clusters):
+				totalRMSE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]])**2;
+				totalMAE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
+			else:
+				badusers += 1;
+	
+	print badusers	
 	return {'RMSE':((1 / 800000) * totalRMSE)**.5, 'MAE':((1 / 800000) * totalMAE)**.5};
 
 
