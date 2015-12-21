@@ -146,6 +146,67 @@ def error(numUserClusters,numBusinessClusters):
         print totalMAE
 	return {'RMSE':((1.0/ 800000) * totalRMSE)**.5, 'MAE':((1.0 / 800000) * totalMAE)**.5};
 
+def errorV(numUserClusters, numBusinessClusters, validation_clusters):
+	import featurizer
+	import numpy as np
+	import cPickle as pickle	
+	from scipy import sparse
+	import json
+	with open('business_data.p', 'rb') as handle:
+		data = pickle.load(handle);
+
+	star_matrix = np.empty([numUserClusters,numBusinessClusters]);
+
+	totalRMSE = 0;
+	totalMAE = 0;
+
+	user_weights = pickle.load(open('user_weights.p', 'rb'));
+
+	user_clusters = pickle.load(open('clustered_user.p', 'rb'));
+	business_clusters = pickle.load(open('clustered_business.p', 'rb'));
+
+
+	#iterate across stuff
+	for i in range(0,numUserClusters):
+		for j in range(0,numBusinessClusters):
+
+			count = 0;
+			total = 0;
+
+			for user in user_weights.keys():
+				if(i == user_clusters[user]):
+					vals = user_weights[user];
+					if(vals[0,j] != 0):
+						total += vals[0,j] 
+						count += 1;
+			if(count > 0):
+				star_matrix[i,j] = total  / count;
+			else:
+				star_matrix[i,j] = 0;
+
+
+
+	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
+		i = 0;
+		badusers = 0;
+		for review in yelp_reviews:
+			if (i > 800000):
+				break;
+			if (i <= 400000):
+				i += 1;
+				continue;
+			review_contents = json.loads(review);
+			userId = review_contents['user_id'];
+			businessId = review_contents['business_id'];
+			totalRMSE += (review_contents['stars'] - star_matrix[validation_clusters[userId]][business_clusters[businessId]])**2;
+			totalMAE += np.absolute(review_contents['stars'] - star_matrix[validation_clusters[userId]][business_clusters[businessId]]);
+			i = i + 1;
+	
+		
+        print totalRMSE
+        print totalMAE
+	return {'RMSE':((1.0/ 800000) * totalRMSE)**.5, 'MAE':((1.0 / 800000) * totalMAE)**.5};
+
 
 
 

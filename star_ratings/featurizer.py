@@ -30,7 +30,7 @@ def tfidf(input):
 
 
 def kmeans(input, num_clusters):
-	from sklearn.cluster import KMeans
+	from sklearn.cluster import MiniBatchKMeans as KMeans
 	import numpy as np
 	from scipy.sparse import csr_matrix
 	input_as_np = np.array(input.values());
@@ -46,4 +46,4 @@ def kmeans(input, num_clusters):
 	for business_id, cluster in zip(input.keys(), clustered_input):
 		output[business_id] = cluster;
 
-	return output
+	return {'data_clusters':output, 'cluster_info':clf}

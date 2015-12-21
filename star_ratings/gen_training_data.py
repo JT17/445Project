@@ -64,15 +64,19 @@ def cluster_users(num_clusters, useful_threshold):
 	business_clusters = pickle.load(open('clustered_business.p', "rb"));
 	num_businesses = len(set(business_clusters.values()))
 	num_train_users = 0;
+	num_test_users = 0;
 	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
 		i = 0;
 		for review in yelp_reviews:
 			review_contents = json.loads(review);
-			if(i > 1500000):
+			if(i > 800000):
+				break;
+			if(i > 400000):
 				if(review_contents['user_id'] in testing_clusters):
 					testing_clusters[review_contents['user_id']][business_clusters[review_contents['business_id']]] += review_contents['stars'];
 					testing_num[review_contents['user_id']][business_clusters[review_contents['business_id']]] += 1 
 				else:
+					num_test_users += 1;
 					testing_clusters[review_contents['user_id']] = [0] * num_businesses 
 					testing_num[review_contents['user_id']] = [0] * num_businesses
 					testing_clusters[review_contents['user_id']][business_clusters[review_contents['business_id']]] += review_contents['stars'];
@@ -123,8 +127,23 @@ def cluster_users(num_clusters, useful_threshold):
 			training_weights[user+'aaaaaaa'] = sparse.csr_matrix(vals)
 		i += 1;
 
+	testing_weights = {} 
+	i = 0;
+	for user, business_categories, num_revs in zip(testing_clusters.keys(), testing_clusters.values(), testing_num.values()):
+		j = 0;
+		vals = [];
+		for weight, num in zip(business_categories, num_revs):
+			if(num != 0):
+				vals.append(weight/float(num));
+				# training_weights[user] = weight/float(num);
+			else:
+				vals.append(0);
+			j += 1;
+		testing_weights[user] = sparse.csr_matrix(vals);
+		i += 1;
+
 	pickle.dump(training_weights, open("user_weights.p", "wb"))
-	return training_weights;	
+	return {'training':training_weights, 'validation':testing_weights};	
 #	return {'training':training, 'training_labels':training_labels, 'testing':testing, 'testing_labels':testing_labels, 'training_categories' : training_category, 'testing_categories':testing_category}
 	
 if __name__ == '__main__':
