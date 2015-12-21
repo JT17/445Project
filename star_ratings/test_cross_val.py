@@ -20,6 +20,10 @@ for val in input_as_np:
 	dense_vals[index] = val.toarray();
 	index = index + 1;
 validation_clusters = user_clusters['cluster_info'].predict(dense_vals);
-error = classifier.errorV(numUserClusters,numBusinessClusters,validation_clusters);
+#print validation_clusters;
+output = {};
+for v_id, cluster in zip(user_data['validation'].keys(),validation_clusters):
+	output[v_id] = cluster;
+error = classifier.errorV(numUserClusters,numBusinessClusters,output);
 print error
 pickle.dump(error, open('error.p', 'wb'))

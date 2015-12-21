@@ -205,7 +205,7 @@ def errorV(numUserClusters, numBusinessClusters, validation_clusters):
 		
         print totalRMSE
         print totalMAE
-	return {'RMSE':((1.0/ 800000) * totalRMSE)**.5, 'MAE':((1.0 / 800000) * totalMAE)**.5};
+	return {'RMSE':((1.0/ 400000) * totalRMSE)**.5, 'MAE':((1.0 / 400000) * totalMAE)**.5};
 
 
 
