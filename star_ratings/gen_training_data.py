@@ -49,7 +49,7 @@ def parse_business_data():
 	return business_categories;	
 
 
-def cluster_users(num_clusters, useful_threshold):
+def cluster_users(num_clusters, useful_threshold, setsize):
 	import json
 	import cPickle as pickle
 	import numpy as np
@@ -71,7 +71,7 @@ def cluster_users(num_clusters, useful_threshold):
 			review_contents = json.loads(review);
 			if(i > 800000):
 				break;
-			if(i > 400000):
+			if(i > setsize):
 				if(review_contents['user_id'] in testing_clusters):
 					testing_clusters[review_contents['user_id']][business_clusters[review_contents['business_id']]] += review_contents['stars'];
 					testing_num[review_contents['user_id']][business_clusters[review_contents['business_id']]] += 1 

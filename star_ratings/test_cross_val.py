@@ -10,7 +10,7 @@ numUserClusters = 10;
 business_data = pickle.load(open("business_data.p", "rb"))
 business_clusters = featurizer.kmeans(business_data,numBusinessClusters);
 pickle.dump(business_clusters['data_clusters'], open('clustered_business.p', 'wb'))
-user_data = gen_training_data.cluster_users(numUserClusters,5);
+user_data = gen_training_data.cluster_users(numUserClusters,5,400000);
 user_clusters = featurizer.kmeans(user_data['training'], numUserClusters);
 pickle.dump(user_clusters['data_clusters'], open('clustered_user.p', 'wb'))
 input_as_np = np.array(user_data['validation'].values());
