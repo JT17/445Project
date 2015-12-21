@@ -80,7 +80,7 @@ def user_utility_UsrClstr(userId, businessId, w1, w2, b, userClstr):
 			count += 1;
 
 
-	star_prediction = total / count;
+	star_prediction = float(total) / count;
 
 
 	return w1 * star_prediction + w2 * average_rating + b;
@@ -136,13 +136,15 @@ def error(numUserClusters,numBusinessClusters):
 			businessId = review_contents['business_id'];
 			if(userId in user_clusters):
 				totalRMSE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]])**2;
-				totalMAE += (review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
+				totalMAE += np.absolute(review_contents['stars'] - star_matrix[user_clusters[userId]][business_clusters[businessId]]);
 			else:
 				badusers += 1;
 			i = i + 1;
 	
 	print badusers	
-	return {'RMSE':((1 / 800000) * totalRMSE)**.5, 'MAE':((1 / 800000) * totalMAE)**.5};
+        print totalRMSE
+        print totalMAE
+	return {'RMSE':((1.0/ 800000) * totalRMSE)**.5, 'MAE':((1.0 / 800000) * totalMAE)**.5};
 
 
 
