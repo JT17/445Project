@@ -1,10 +1,3 @@
-num_businesses = 61184;
-num_businesses_food = 21892;
-num_reviews = 1569264;
-ave_stars = 3.74265579278;
-num_reviews_food = 990627;
-num_users_food = 269231;
-
 def review_stats():
 	num = 0;
 	ave = 0;
@@ -81,18 +74,18 @@ def gen_business_ave_stars(businesses, users):
 	
 	# change values from length-2 lists to average numbers of stars
 	for b_id in businesses_stars:
-		businesses_stars[b_id] = businesses_stars[b_id][0] / businesses_stars[b_id][1];
+		if (businesses_stars[b_id][1] > 0):
+			businesses_stars[b_id] = businesses_stars[b_id][0] / businesses_stars[b_id][1];
+		else:
+			businesses_stars[b_id] = 0;
 	return businesses_stars;
 	
 
 
 def svd():
-	from sklearn.decomposition import TruncatedSVD
 	import json
 	import copy
 	import numpy as np
-	from scipy import sparse
-	import cPickle as pickle
 	import random
 	
 	# businesses, users = gen_business_data_all();
@@ -109,9 +102,6 @@ def svd():
 	num_businesses = len(businesses);
 	num_users = len(users);
 	
-	print num_businesses;
-	print num_users;
-	
 	review_matrix = np.zeros((num_businesses, num_users)); # very big
 	
 	businesses_stars = gen_business_ave_stars(businesses, users);
@@ -120,12 +110,14 @@ def svd():
 	# training reviews
 	for i in range(num_businesses):
 		ave = businesses_stars[businesses[i]];
+		if (ave == 0):
+			ave = 3;
 		for j in range(num_users):
 			review_matrix[i][j] = ave;
 	
 	print "Review matrix allocated";
 	
-	reviews = {}; # keys are [b_id, u_id], values are [stars, 0/1]
+	reviews = {}; # keys are concat(b_id, u_id), values are [b_id, u_id, stars, 0/1]
 	
 	# fill review_matrix with training data
 	with open('../../yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json') as yelp_reviews:
@@ -135,10 +127,11 @@ def svd():
 			u_id = review_contents['user_id'];
 			if (b_id in businesses and u_id in users):
 				r = random.randint(0,9);
-				if (r == 9): # test data
-					reviews[[b_id, u_id]] = [review_contents['stars'], 1];
+				bu_id = str(b_id) + str(u_id);
+				if (r >= 5): # test data
+					reviews[bu_id] = [b_id, u_id, review_contents['stars'], 1];
 				else: # training data
-					reviews[[b_id, u_id]] = [review_contents['stars'], 0];
+					reviews[bu_id] = [b_id, u_id, review_contents['stars'], 0];
 					b_ind = businesses.index(b_id);
 					u_ind = users.index(u_id);
 					review_matrix[b_ind][u_ind] = review_contents['stars'];
@@ -146,12 +139,15 @@ def svd():
 	print "Training data entered";
 	
 	U, s, V = np.linalg.svd(review_matrix);
-	S = np.diag(s); # diagonal matrix whose entries are given by the vector s
+	
+	S = np.zeros((np.shape(U)[0],np.shape(V)[0]));
+	
+	#S = np.diag(s); # diagonal matrix whose entries are given by the vector s
 	for i in range(len(s)):
 		N = 100; # hyperparameter to be tuned: best rank <= 100 approximation
-		if (i > 100):
-			S[i][i] = 0;
-	prediction_matrix = U * S * V;
+		if (i < N):
+			S[i][i] = s[i];
+	prediction_matrix = np.dot(U,np.dot(S,V));
 	
 	print "SVD prediction matrix computed";
 	
@@ -160,12 +156,12 @@ def svd():
 	mae = 0;
 	count = 0;
 	for key in reviews:
-		if (key[1] == 1): # test data
+		if (reviews[key][3] == 1): # test data
 			count = count + 1;
-			b_ind = businesses.index(key[0]);
-			u_ind = users.index(key[1]);
-			rmse = rmse + (review_matrix[b_ind][u_ind] - reviews[key][0])**2;
-			mae = mae + abs(review_matrix[b_ind][u_ind] - reviews[key][0]);
+			b_ind = businesses.index(reviews[key][0]);
+			u_ind = users.index(reviews[key][1]);
+			rmse = rmse + (prediction_matrix[b_ind][u_ind] - reviews[key][2])**2;
+			mae = mae + abs(prediction_matrix[b_ind][u_ind] - reviews[key][2]);
 	rmse = rmse / (1.0 * count);
 	mae = mae / (1.0 * count);
 	
